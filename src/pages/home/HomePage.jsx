@@ -163,13 +163,20 @@ const HomePage = () => {
                   </thead>
                   <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
                     {data?.map((item, index) => (
-                      <tr onClick={() => {
-                        setWatchlist(item);
-                        navigate(`/single/${item?.id}`)
-                      }} key={index}>
+                      <tr
+                        onClick={() => {
+                          setWatchlist(item);
+                          navigate(`/single/${item?.id}`);
+                        }}
+                        key={index}
+                      >
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-200">
                           <div className="flex items-center gap-3">
-                            <img className="w-10" src={item?.image} alt="Burasim" />
+                            <img
+                              className="w-10"
+                              src={item?.image}
+                              alt="Burasim"
+                            />
                             <span>
                               <h2>{item?.symbol}</h2>
                               <p>{item?.name}</p>
@@ -193,14 +200,21 @@ const HomePage = () => {
                   </tbody>
                 </table>
               </div>
+              <div className="flex justify-center gap-3 mt-6">
+                <button
+                  onClick={() => setPage(page + 1)}
+                  className="bg-och_blue-100 px-4 py-1 rounded-sm"
+                >
+                  Page/{page}
+                </button>
 
-              <button onClick={() => setPage(page + 1)} className="text-white ml-10">
-                Page {page}
-              </button>
-
-              <button onClick={() => setPeerPage(peerPage + 10)} className="text-white ml-10">
-                Per Page {peerPage}
-              </button>
+                <button
+                  onClick={() => setPeerPage(peerPage + 10)}
+                  className="bg-och_blue-100 px-4 py-1 rounded-sm"
+                >
+                  Per Page/{peerPage}
+                </button>
+              </div>
             </div>
           </div>
         </div>
