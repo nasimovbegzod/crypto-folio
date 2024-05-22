@@ -16,7 +16,11 @@ const HomePage = () => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [peerPage, setPeerPage] = useState(10);
-
+  const [active, setActice] = useState(false);
+  const [watchList, setWatchList] = useState(() => {
+    const savedWatchList = localStorage.getItem("watchList");
+    return savedWatchList ? JSON.parse(savedWatchList) : [];
+  });
   const { setWatchlist } = useContext(MarketContext);
   const navigate = useNavigate();
   const settings = {
@@ -33,10 +37,23 @@ const HomePage = () => {
       .then((response) => setData(response.data))
       .catch((error) => console.log(error));
   }, [page, peerPage]);
+  function handleAddSelect(item, event) {
+    event.stopPropagation()
+    setWatchList((prevWatchList) => [...prevWatchList, item]);
+  }
 
+  function handleRemoveCrypto(id) {
+    setWatchList((prevWatchList) =>
+      prevWatchList.filter((item) => item.id !== id)
+    );
+  }
+
+  useEffect(() => {
+    localStorage.setItem("watchList", JSON.stringify(watchList));
+  }, [watchList]);
   return (
     <main className="bg-[#15171B]">
-      <Navbar />
+      <Navbar setActice={setActice} />
       <section className="bg-hero-pattern bg-cover h-[450px] bg-center">
         <div className="main-container">
           <h1 className="pt-24 text-6xl text-center text-och_blue-100 font-semibold">
@@ -116,7 +133,7 @@ const HomePage = () => {
                     src={img4}
                     alt="efir"
                     className="w-full h-full object-cover"
-                  />r
+                  />
                 </figure>
 
                 <div className="flex flex-col text-white text-center ">
@@ -135,7 +152,7 @@ const HomePage = () => {
 
       <section className="main-container pt-2">
         <h1
-          className="text-4xl text-center text-white font-thin"
+          className="text-4xl text-center text-white font-thin mt-5"
           style={{ imageRendering: "pixelated" }}
         >
           Cryptocurrency Prices by Market Cap
@@ -143,31 +160,31 @@ const HomePage = () => {
         <div className="flex flex-col main-container ">
           <div className="-m-1.5 overflow-x-auto">
             <div className="p-1.5 min-w-full inline-block align-middle">
-              <div className="overflow-hidden">
+              <div className="overflow-hidden mt-5">
                 <table className="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
                   <thead className="bg-[#87CEEB]">
                     <tr>
                       <th
                         scope="col"
-                        className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"
+                        className="px-6 py-3 text-start text-xs font-semibold text-bg_color-900  uppercase dark:text-neutral-500"
                       >
                         Coin
                       </th>
                       <th
                         scope="col"
-                        className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"
+                        className="px-6 py-3 text-start text-xs font-semibold text-bg_color-900  uppercase dark:text-neutral-500"
                       >
                         Price
                       </th>
                       <th
                         scope="col"
-                        className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"
+                        className="px-6 py-3 text-start text-xs font-semibold text-bg_color-900  uppercase dark:text-neutral-500"
                       >
                         24h Change
                       </th>
                       <th
                         scope="col"
-                        className="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"
+                        className="px-6 py-3 text-end text-xs font-semibold text-bg_color-900  uppercase dark:text-neutral-500"
                       >
                         Market Cap
                       </th>
@@ -183,24 +200,29 @@ const HomePage = () => {
                         key={index}
                       >
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-200">
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-3 text-white">
                             <img
                               className="w-10"
                               src={item?.image}
                               alt="Burasim"
                             />
                             <span>
-                              <h2>{item?.symbol}</h2>
+                              <h2 className="uppercase">{item?.symbol}</h2>
                               <p>{item?.name}</p>
                             </span>
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">
-                          ₹ 3,045,665.00
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200 text-white">
+                          ₹ {item.current_price}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">
-                          <div className="flex items-center gap-3">
-                            <FaEye />
+                          <div className="flex items-center gap-3 text-white">
+                            <button
+                              className="text-lg hover:scale-110 cursor-pointer transition-transform z-30"
+                              onClick={(event) => handleAddSelect(item, event)}
+                            >
+                              <FaEye />
+                            </button>
                             <p>+3.59%</p>
                           </div>
                         </td>
@@ -232,7 +254,48 @@ const HomePage = () => {
         </div>
       </section>
 
-      <section></section>
+      {active && (
+        <section className="fixed top-0 right-0 h-full w-1/4 bg-[#515151] px-5 transition">
+          <header className="uppercase text-white text-center mt-3 text-2xl">
+            Watchlist
+          </header>
+
+          {watchList?.length ? (
+            <div className="grid grid-cols-2 gap-7 mt-3">
+              {watchList.map((item) => {
+                return (
+                  <div
+                    className="bg-[#14161A] text-white rounded-2xl px-5 py-4"
+                    key={item?.id}
+                  >
+                    <figure className="w-full">
+                      <img
+                        src={item?.image}
+                        alt={"CRYPTO ICON"}
+                        className="w-full h-full object-cover"
+                      />
+                    </figure>
+
+                    <div className="text-center pt-2">
+                      <p className="text-white">₹ {item?.current_price}</p>
+                      <button
+                        className="bg-[#FF0000] mt-3 px-4"
+                        onClick={() => handleRemoveCrypto(item?.id)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="text-white text-xl mt-4 text-center">
+              You are not select any crypto
+            </div>
+          )}
+        </section>
+      )}
     </main>
   );
 };
