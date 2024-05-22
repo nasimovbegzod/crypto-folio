@@ -1,9 +1,16 @@
 import { useContext, useEffect, useState } from "react";
-import Navbar from "../header/Navbar";
 import { FaEye } from "react-icons/fa";
-import axios from "axios";
 import { MarketContext } from "../../context/MarketContext";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../header/Navbar";
+import axios from "axios";
+import img1 from "../../assets/Hero/ethereum.png.png";
+import img2 from "../../assets/Hero/xrp-symbol-white-128.png.png";
+import img3 from "../../assets/Hero/solana.png.png";
+import img4 from "../../assets/Hero/bnb-icon2_2x.png.png";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const HomePage = () => {
   const [data, setData] = useState([]);
@@ -11,17 +18,22 @@ const HomePage = () => {
   const [peerPage, setPeerPage] = useState(10);
 
   const { setWatchlist } = useContext(MarketContext);
-  const navigate = useNavigate()
-
+  const navigate = useNavigate();
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 4,
+    slidesToScroll: 1,
+  };
   useEffect(() => {
     axios(
       `https://api.coingecko.com/api/v3/coins/markets?vs_currency=USD&order=gecko_desc&per_page=${peerPage}&page=${page}&sparkline=false&price_change_percentage=24h`
     )
       .then((response) => setData(response.data))
       .catch((error) => console.log(error));
-  }, [page,peerPage]);
+  }, [page, peerPage]);
 
-  console.log(data);
   return (
     <main className="bg-[#15171B]">
       <Navbar />
@@ -35,7 +47,7 @@ const HomePage = () => {
           </p>
         </div>
 
-        {/* <div className="main-container pt-7">
+        <div className="main-container pt-7">
           <Slider {...settings}>
             <div className="flex justify-center">
               <div className="bg-slate-20 w-6/12">
@@ -104,7 +116,7 @@ const HomePage = () => {
                     src={img4}
                     alt="efir"
                     className="w-full h-full object-cover"
-                  />
+                  />r
                 </figure>
 
                 <div className="flex flex-col text-white text-center ">
@@ -118,7 +130,7 @@ const HomePage = () => {
               </div>
             </div>
           </Slider>
-        </div> */}
+        </div>
       </section>
 
       <section className="main-container pt-2">
