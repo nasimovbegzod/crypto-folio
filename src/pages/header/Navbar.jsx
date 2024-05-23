@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const Navbar = () => {
+const Navbar = ({ setActice }) => {
   let navigate = useNavigate();
   return (
     <div className="bg-bg_color-900">
@@ -15,7 +15,10 @@ const Navbar = () => {
             <option>UZS</option>
             <option>RUB</option>
           </select>
-          <button className="bg-och_blue-100 px-4 py-1 rounded-sm">
+          <button
+            className="bg-och_blue-100 px-4 py-1 rounded-sm"
+            onClick={() => setActice((prev) => !prev)}
+          >
             WATCH LIST
           </button>
         </div>
